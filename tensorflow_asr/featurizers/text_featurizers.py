@@ -21,6 +21,7 @@ import numpy as np
 import sentencepiece as sp
 import tensorflow as tf
 import tensorflow_datasets as tds
+import tensorflow_text as tft
 
 from tensorflow_asr.configs.config import DecoderConfig
 from tensorflow_asr.utils import file_util
@@ -573,3 +574,71 @@ class SentencePieceFeaturizer(TextFeaturizer):
             indices = self.normalize_indices(indices)
             upoints = tf.gather_nd(self.upoints, tf.expand_dims(indices, axis=-1))
             return tf.gather_nd(upoints, tf.where(tf.not_equal(upoints, 0)))
+
+
+class WordPieceFeaturizer(TextFeaturizer):
+    def __init__(
+        self,
+        decoder_config: dict,
+    ):
+        super().__init__(decoder_config)
+        self.blank = 0  # subword treats blank as 0
+        self.tokenizer = tft.WordpieceTokenizer(
+            vocab_lookup_table=self.decoder_config.vocabulary,
+            unknown_token=None,
+            token_out_type=tf.int32,
+            max_chars_per_token=self.decoder_config.max_subword_length,
+        )
+        self.num_classes = self.tokenizer.vocab_size()
+
+    def extract(
+        self,
+        text: str,
+    ) -> tf.Tensor:
+        """
+        Convert string to a list of integers
+        Args:
+            text: string (sequence of characters)
+
+        Returns:
+            sequence of ints in tf.Tensor
+        """
+        text = self.preprocess_text(text)
+        text = text.strip()  # remove trailing space
+        indices = tf.reshape(
+            self.tokenizer.tokenize(text).to_tensor(default_value=self.blank),
+            shape=[-1],
+        )
+        return indices
+
+    def iextract(
+        self,
+        indices: tf.Tensor,
+    ) -> tf.Tensor:
+        """
+        Convert list of indices to string
+        Args:
+            indices: tf.Tensor with dim [B, None]
+
+        Returns:
+            transcripts: tf.Tensor of dtype tf.string with dim [B]
+        """
+        transcripts = self.tokenizer.detokenize(indices)
+        return tf.strings.reduce_join(transcripts, axis=-1, separator="")
+
+    @tf.function(input_signature=[tf.TensorSpec([None], dtype=tf.int32)])
+    def indices2upoints(
+        self,
+        indices: tf.Tensor,
+    ) -> tf.Tensor:
+        """
+        Transform Predicted Indices to Unicode Code Points (for using tflite)
+        Args:
+            indices: tf.Tensor of Classes in shape [None]
+
+        Returns:
+            unicode code points transcript with dtype tf.int32 and shape [None]
+        """
+        with tf.name_scope("indices2upoints"):
+            transcripts = self.iextract(indices)
+            return tf.strings.unicode_decode(transcripts, "UTF-8").to_tensor()

@@ -8,8 +8,9 @@ logger = tf.get_logger()
 
 def prepare_featurizers(
     config: Config,
-    subwords: bool = True,
+    subwords: bool = False,
     sentence_piece: bool = False,
+    wordpiece: bool = True,
 ):
     speech_featurizer = speech_featurizers.TFSpeechFeaturizer(config.speech_config)
     if sentence_piece:
@@ -18,6 +19,9 @@ def prepare_featurizers(
     elif subwords:
         logger.info("Loading subwords ...")
         text_featurizer = text_featurizers.SubwordFeaturizer(config.decoder_config)
+    elif wordpiece:
+        logger.info("Loading wordpiece ...")
+        text_featurizer = text_featurizers.WordPieceFeaturizer(config.decoder_config)
     else:
         logger.info("Use characters ...")
         text_featurizer = text_featurizers.CharFeaturizer(config.decoder_config)
