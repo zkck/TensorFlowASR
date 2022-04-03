@@ -33,7 +33,8 @@ def main(
     config: str = DEFAULT_YAML,
     tfrecords: bool = False,
     sentence_piece: bool = False,
-    subwords: bool = True,
+    subwords: bool = False,
+    wordpiece: bool = False,
     bs: int = None,
     spx: int = 1,
     metadata: str = None,
@@ -52,6 +53,7 @@ def main(
         config=config,
         subwords=subwords,
         sentence_piece=sentence_piece,
+        wordpiece=wordpiece,
     )
 
     train_dataset, eval_dataset = dataset_helpers.prepare_training_datasets(

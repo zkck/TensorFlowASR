@@ -21,6 +21,7 @@ TensorFlowASR implements some automatic speech recognition architectures such as
 
 ## What's New?
 
+- (04/03/2022) Add wordpiece tokenizer from tensorflow-text as another text featurizer
 - (04/17/2021) Refactor repository with new version 1.x
 - (02/16/2021) Supported for TPU training
 - (12/27/2020) Supported _naive_ token level timestamp, see [demo](./examples/demonstration/conformer.py) with flag `--timestamp`

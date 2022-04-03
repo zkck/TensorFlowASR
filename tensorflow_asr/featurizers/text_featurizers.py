@@ -604,11 +604,11 @@ class WordPieceFeaturizer(TextFeaturizer):
             sequence of ints in tf.Tensor
         """
         text = self.preprocess_text(text)
-        text = text.strip()  # remove trailing space
-        indices = tf.reshape(
-            self.tokenizer.tokenize(text).to_tensor(default_value=self.blank),
-            shape=[-1],
-        )
+        text = text.strip().split(" ")  # remove spaces
+        print(text)
+        tokens = self.tokenizer.tokenize(text)
+        indices = tokens.merge_dims(0, 1)
+        print(indices.numpy())
         return indices
 
     def iextract(
@@ -624,7 +624,7 @@ class WordPieceFeaturizer(TextFeaturizer):
             transcripts: tf.Tensor of dtype tf.string with dim [B]
         """
         transcripts = self.tokenizer.detokenize(indices)
-        return tf.strings.reduce_join(transcripts, axis=-1, separator="")
+        return tf.strings.reduce_join(transcripts, axis=-1, separator=" ")  # add spaces
 
     @tf.function(input_signature=[tf.TensorSpec([None], dtype=tf.int32)])
     def indices2upoints(
@@ -640,5 +640,6 @@ class WordPieceFeaturizer(TextFeaturizer):
             unicode code points transcript with dtype tf.int32 and shape [None]
         """
         with tf.name_scope("indices2upoints"):
-            transcripts = self.iextract(indices)
-            return tf.strings.unicode_decode(transcripts, "UTF-8").to_tensor()
+            transcripts = self.iextract(tf.reshape(indices, [1, -1]))
+            upoints = tf.strings.unicode_decode(transcripts, "UTF-8").to_tensor()
+            return tf.reshape(upoints, [-1])
