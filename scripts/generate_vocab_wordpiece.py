@@ -15,12 +15,12 @@
 
 from typing import List
 import fire
-import logging
+from tensorflow_asr.utils import env_util
+
+logger = env_util.setup_environment()
 
 import tensorflow as tf
 from tensorflow_text.tools.wordpiece_vocab import bert_vocab_from_dataset as bert_vocab
-
-logger = logging.getLogger(__name__)
 
 
 def write_vocab_file(filepath, vocab):
