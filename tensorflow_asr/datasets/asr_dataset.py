@@ -137,8 +137,10 @@ class ASRDataset(BaseDataset):
                 self.entries += temp_lines[1:]
         # The files is "\t" seperated
         self.entries = [line.split("\t", 2) for line in self.entries]
-        for i, line in enumerate(self.entries):
-            self.entries[i][-1] = " ".join([str(x) for x in self.text_featurizer.extract(line[-1]).numpy()])
+        with tqdm.tqdm(total=len(self.entries), desc="Convert transcript to indices") as pbar:
+            for i, line in enumerate(self.entries):
+                self.entries[i][-1] = " ".join([str(x) for x in self.text_featurizer.extract(line[-1]).numpy()])
+                pbar.update(1)
         self.entries = np.array(self.entries)
         if self.shuffle:
             np.random.shuffle(self.entries)  # Mix transcripts.tsv
