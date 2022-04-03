@@ -13,6 +13,10 @@
 # limitations under the License.
 
 import fire
+from tensorflow_asr.utils import env_util
+
+logger = env_util.setup_environment()
+
 from tensorflow_asr.configs.config import Config
 from tensorflow_asr.utils.file_util import preprocess_paths
 from tensorflow_asr.datasets.asr_dataset import ASRTFRecordDataset
@@ -32,6 +36,7 @@ def main(
 ):
     data_paths = preprocess_paths(transcripts)
     tfrecords_dir = preprocess_paths(tfrecords_dir, isdir=True)
+    logger.info(f"Create tfrecords to directory: {tfrecords_dir}")
 
     config = Config(config_file)
 
@@ -39,7 +44,7 @@ def main(
         config=config, subwords=subwords, sentence_piece=sentence_piece, wordpiece=wordpiece
     )
 
-    ASRTFRecordDataset(
+    tfrecord_dataset = ASRTFRecordDataset(
         data_paths=data_paths,
         tfrecords_dir=tfrecords_dir,
         speech_featurizer=speech_featurizer,
@@ -47,7 +52,8 @@ def main(
         stage=mode,
         shuffle=shuffle,
         tfrecords_shards=tfrecords_shards,
-    ).create_tfrecords()
+    )
+    tfrecord_dataset.create_tfrecords()
 
 
 if __name__ == "__main__":
