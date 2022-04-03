@@ -28,9 +28,9 @@ def load_yaml(
     # Fix yaml numbers https://stackoverflow.com/a/30462009/11037553
     loader = yaml.SafeLoader
     loader.add_implicit_resolver(
-        u"tag:yaml.org,2002:float",
+        "tag:yaml.org,2002:float",
         re.compile(
-            u"""^(?:
+            """^(?:
          [-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+]?[0-9]+)?
         |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
         |\\.[0-9_]+(?:[eE][-+][0-9]+)?
@@ -39,7 +39,7 @@ def load_yaml(
         |\\.(?:nan|NaN|NAN))$""",
             re.X,
         ),
-        list(u"-+0123456789."),
+        list("-+0123456789."),
     )
     with open(path, "r", encoding="utf-8") as file:
         return yaml.load(file, Loader=loader)
@@ -48,11 +48,7 @@ def load_yaml(
 def is_hdf5_filepath(
     filepath: str,
 ) -> bool:
-    return (
-        filepath.endswith(".h5")
-        or filepath.endswith(".keras")
-        or filepath.endswith(".hdf5")
-    )
+    return filepath.endswith(".h5") or filepath.endswith(".keras") or filepath.endswith(".hdf5")
 
 
 def is_cloud_path(
@@ -81,22 +77,15 @@ def preprocess_paths(
     Returns:
         Union[List, str]: A processed path or list of paths, return None if it's not path
     """
-    if isinstance(paths, list):
-        paths = [
-            path if is_cloud_path(path) else os.path.abspath(os.path.expanduser(path))
-            for path in paths
-        ]
+    if isinstance(paths, (list, tuple)):
+        paths = [path if is_cloud_path(path) else os.path.abspath(os.path.expanduser(path)) for path in paths]
         for path in paths:
             dirpath = path if isdir else os.path.dirname(path)
             if not tf.io.gfile.exists(dirpath):
                 tf.io.gfile.makedirs(dirpath)
         return paths
     if isinstance(paths, str):
-        paths = (
-            paths
-            if is_cloud_path(paths)
-            else os.path.abspath(os.path.expanduser(paths))
-        )
+        paths = paths if is_cloud_path(paths) else os.path.abspath(os.path.expanduser(paths))
         dirpath = paths if isdir else os.path.dirname(paths)
         if not tf.io.gfile.exists(dirpath):
             tf.io.gfile.makedirs(dirpath)

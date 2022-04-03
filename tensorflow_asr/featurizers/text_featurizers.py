@@ -603,12 +603,8 @@ class WordPieceFeaturizer(TextFeaturizer):
         Returns:
             sequence of ints in tf.Tensor
         """
-        text = self.preprocess_text(text)
-        text = text.strip().split(" ")  # remove spaces
-        print(text)
-        tokens = self.tokenizer.tokenize(text)
-        indices = tokens.merge_dims(0, 1)
-        print(indices.numpy())
+        text = self.preprocess_text(text).strip().split(" ")  # remove spaces
+        indices = self.tokenizer.tokenize(text).merge_dims(0, 1)
         return indices
 
     def iextract(
