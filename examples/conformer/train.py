@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import fire
 import math
 from tensorflow_asr.utils import env_util
@@ -26,11 +25,8 @@ from tensorflow_asr.models.transducer.conformer import Conformer
 from tensorflow_asr.optimizers.schedules import TransformerSchedule
 
 
-DEFAULT_YAML = os.path.join(os.path.abspath(os.path.dirname(__file__)), "config.yml")
-
-
 def main(
-    config: str = DEFAULT_YAML,
+    config_file: str = None,
     tfrecords: bool = False,
     sentence_piece: bool = False,
     subwords: bool = False,
@@ -45,8 +41,9 @@ def main(
 ):
     tf.keras.backend.clear_session()
     tf.config.optimizer.set_experimental_options({"auto_mixed_precision": mxp})
+    strategy = env_util.setup_strategy(devices)
 
-    config = Config(config)
+    config = Config(config_file)
 
     speech_featurizer, text_featurizer = featurizer_helpers.prepare_featurizers(
         config=config,
@@ -66,8 +63,6 @@ def main(
     if not static_length:
         speech_featurizer.reset_length()
         text_featurizer.reset_length()
-
-    strategy = env_util.setup_strategy(devices)
 
     train_data_loader, eval_data_loader, global_batch_size = dataset_helpers.prepare_training_data_loaders(
         config=config,
