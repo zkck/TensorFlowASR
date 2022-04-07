@@ -41,7 +41,6 @@ def main(
 ):
     tf.keras.backend.clear_session()
     tf.config.optimizer.set_experimental_options({"auto_mixed_precision": mxp})
-    strategy = env_util.setup_strategy(devices)
 
     config = Config(config_file)
 
@@ -63,6 +62,8 @@ def main(
     if not static_length:
         speech_featurizer.reset_length()
         text_featurizer.reset_length()
+
+    strategy = env_util.setup_strategy(devices)
 
     train_data_loader, eval_data_loader, global_batch_size = dataset_helpers.prepare_training_data_loaders(
         config=config,
