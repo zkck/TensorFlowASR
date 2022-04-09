@@ -52,6 +52,7 @@ def main(
         wordpiece=wordpiece,
     )
 
+    logger.info(f"Metadata: {metadata}")
     train_dataset, eval_dataset = dataset_helpers.prepare_training_datasets(
         config=config,
         speech_featurizer=speech_featurizer,
@@ -85,7 +86,7 @@ def main(
                 warmup_steps=config.learning_config.optimizer_config.pop("warmup_steps", 10000),
                 max_lr=(0.05 / math.sqrt(conformer.dmodel)),
             ),
-            **config.learning_config.optimizer_config
+            **config.learning_config.optimizer_config,
         )
         conformer.compile(
             optimizer=optimizer,
