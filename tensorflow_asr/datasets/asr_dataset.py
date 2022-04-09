@@ -105,6 +105,7 @@ class ASRDataset(BaseDataset):
             content = metadata
         else:
             metadata = file_util.preprocess_paths(metadata)
+            logger.info(f"Metadata: {metadata}")
             if tf.io.gfile.exists(metadata):
                 logger.info(f"Loading metadata from {metadata} ...")
                 with tf.io.gfile.GFile(metadata, "r") as f:

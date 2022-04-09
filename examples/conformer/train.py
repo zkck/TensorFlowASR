@@ -52,7 +52,6 @@ def main(
         wordpiece=wordpiece,
     )
 
-    logger.info(f"Metadata: {metadata}")
     train_dataset, eval_dataset = dataset_helpers.prepare_training_datasets(
         config=config,
         speech_featurizer=speech_featurizer,
