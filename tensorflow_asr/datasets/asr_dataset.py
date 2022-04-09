@@ -105,7 +105,6 @@ class ASRDataset(BaseDataset):
             content = metadata
         else:
             metadata = file_util.preprocess_paths(metadata)
-            logger.info(f"Metadata: {metadata}")
             if tf.io.gfile.exists(metadata):
                 logger.info(f"Loading metadata from {metadata} ...")
                 with tf.io.gfile.GFile(metadata, "r") as f:
@@ -113,6 +112,8 @@ class ASRDataset(BaseDataset):
                         content = json.loads(f.read()).get(self.stage, {})
                     except json.JSONDecodeError:
                         raise ValueError(f"File {metadata} must be in json format")
+            else:
+                raise ValueError(f"File {metadata} not found")
         if not content:
             return
         self.speech_featurizer.update_length(int(content.get("max_input_length", 0)))
