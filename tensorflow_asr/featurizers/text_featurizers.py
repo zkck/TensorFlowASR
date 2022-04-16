@@ -619,6 +619,7 @@ class WordPieceFeaturizer(TextFeaturizer):
         Returns:
             transcripts: tf.Tensor of dtype tf.string with dim [B]
         """
+        indices = tf.ragged.boolean_mask(indices, tf.not_equal(indices, self.blank))
         transcripts = self.tokenizer.detokenize(indices)
         return tf.strings.reduce_join(transcripts, axis=-1, separator=" ")  # add spaces
 
