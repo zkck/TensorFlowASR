@@ -33,6 +33,7 @@ def main(
     bs: int = None,
     sentence_piece: bool = False,
     subwords: bool = False,
+    wordpiece: bool = True,
     device: int = 0,
     cpu: bool = False,
     output: str = "test.tsv",
@@ -49,6 +50,7 @@ def main(
         config=config,
         subwords=subwords,
         sentence_piece=sentence_piece,
+        wordpiece=wordpiece,
     )
 
     conformer = Conformer(**config.model_config, vocabulary_size=text_featurizer.num_classes)
