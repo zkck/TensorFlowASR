@@ -27,7 +27,7 @@ DEFAULT_YAML = os.path.join(os.path.abspath(os.path.dirname(__file__)), "config.
 
 
 def main(
-    config: str = DEFAULT_YAML,
+    config_path: str = DEFAULT_YAML,
     saved: str = None,
     mxp: bool = False,
     bs: int = None,
@@ -43,7 +43,7 @@ def main(
     tf.config.optimizer.set_experimental_options({"auto_mixed_precision": mxp})
     env_util.setup_devices([device], cpu=cpu)
 
-    config = Config(config)
+    config = Config(config_path)
 
     speech_featurizer, text_featurizer = featurizer_helpers.prepare_featurizers(
         config=config,

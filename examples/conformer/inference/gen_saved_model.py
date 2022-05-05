@@ -29,14 +29,15 @@ from tensorflow_asr.models.transducer.conformer import Conformer
 
 
 def main(
-    config: str = DEFAULT_YAML,
+    config_path: str = DEFAULT_YAML,
     h5: str = None,
     sentence_piece: bool = False,
     subwords: bool = False,
+    wordpiece: bool = False,
     output_dir: str = None,
 ):
     assert h5 and output_dir
-    config = Config(config)
+    config = Config(config_path)
     tf.random.set_seed(0)
     tf.keras.backend.clear_session()
 
@@ -44,6 +45,7 @@ def main(
         config=config,
         subwords=subwords,
         sentence_piece=sentence_piece,
+        wordpiece=wordpiece,
     )
 
     # build model

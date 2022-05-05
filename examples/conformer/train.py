@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import fire
 import math
 from tensorflow_asr.utils import env_util
@@ -24,9 +25,11 @@ from tensorflow_asr.helpers import featurizer_helpers, dataset_helpers
 from tensorflow_asr.models.transducer.conformer import Conformer
 from tensorflow_asr.optimizers.schedules import TransformerSchedule
 
+DEFAULT_YAML = os.path.join(os.path.abspath(os.path.dirname(__file__)), "config.yml")
+
 
 def main(
-    config_file: str = None,
+    config_path: str = DEFAULT_YAML,
     tfrecords: bool = False,
     sentence_piece: bool = False,
     subwords: bool = False,
@@ -43,7 +46,7 @@ def main(
     tf.config.optimizer.set_experimental_options({"auto_mixed_precision": mxp})
     strategy = env_util.setup_strategy(devices)
 
-    config = Config(config_file)
+    config = Config(config_path)
 
     speech_featurizer, text_featurizer = featurizer_helpers.prepare_featurizers(
         config=config,

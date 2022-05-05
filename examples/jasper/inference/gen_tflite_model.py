@@ -27,7 +27,7 @@ DEFAULT_YAML = os.path.join(os.path.abspath(os.path.dirname(__file__)), "config.
 
 
 def main(
-    config: str = DEFAULT_YAML,
+    config_path: str = DEFAULT_YAML,
     h5: str = None,
     subwords: bool = False,
     sentence_piece: bool = False,
@@ -37,7 +37,7 @@ def main(
     tf.keras.backend.clear_session()
     tf.compat.v1.enable_control_flow_v2()
 
-    config = Config(config)
+    config = Config(config_path)
     speech_featurizer, text_featurizer = featurizer_helpers.prepare_featurizers(
         config=config,
         subwords=subwords,

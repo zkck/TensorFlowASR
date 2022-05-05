@@ -39,9 +39,10 @@ def convert_tflite(
 ):
     concrete_func = model.make_tflite_function().get_concrete_function()
     converter = tf.lite.TFLiteConverter.from_concrete_functions([concrete_func])
-    converter.experimental_new_converter = True
-    converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
+    converter.target_spec.supported_ops = [
+        tf.lite.OpsSet.TFLITE_BUILTINS,  # enable TensorFlow Lite ops.
+        tf.lite.OpsSet.SELECT_TF_OPS,  # enable TensorFlow ops.
+    ]
     tflite_model = converter.convert()
 
     output = file_util.preprocess_paths(output)
