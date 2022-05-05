@@ -108,6 +108,14 @@ pip3 install -e ".[tf2.x]" # or ".[tf2.x-gpu]"
 pip3 install -U "TensorFlowASR[tf2.x]" # or pip3 install -U "TensorFlowASR[tf2.x-gpu]"
 ```
 
+### Installing for development
+
+```bash
+git clone https://github.com/TensorSpeech/TensorFlowASR.git
+cd TensorFlowASR
+pip3 install -e ".[dev]"
+pip3 install -e ".[tf2.x]" # or ".[tf2.x-gpu]"
+```
 
 ### Running in a container
 
@@ -121,9 +129,7 @@ docker-compose up -d
 
 - For _training, testing and using_ **CTC Models**, run `./scripts/install_ctc_decoders.sh`
 
-- For _training_ **Transducer Models** with RNNT Loss in TF, make sure that [warp-transducer](https://github.com/HawkAaron/warp-transducer) **is not installed** (by simply run `pip3 uninstall warprnnt-tensorflow`) (**Recommended**)
-
-- For _training_ **Transducer Models** with RNNT Loss from [warp-transducer](https://github.com/HawkAaron/warp-transducer), run `export CUDA_HOME=/usr/local/cuda && ./scripts/install_rnnt_loss.sh` (**Note**: only `export CUDA_HOME` when you have CUDA)
+- For _training_ **Transducer Models** with RNNT Loss in TF, make sure that [warp-transducer](https://github.com/HawkAaron/warp-transducer) **is not installed** (by simply run `pip3 uninstall warprnnt-tensorflow`)
 
 - For _mixed precision training_, use flag `--mxp` when running python scripts from [examples](./examples)
 
