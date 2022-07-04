@@ -10,32 +10,33 @@ def prepare_training_datasets(
     text_featurizer: TextFeaturizer,
     tfrecords: bool = False,
     metadata: str = None,
+    indefinite: bool = False,
 ):
     if tfrecords:
         train_dataset = asr_dataset.ASRTFRecordDataset(
             speech_featurizer=speech_featurizer,
             text_featurizer=text_featurizer,
             **vars(config.learning_config.train_dataset_config),
-            indefinite=True
+            indefinite=indefinite
         )
         eval_dataset = asr_dataset.ASRTFRecordDataset(
             speech_featurizer=speech_featurizer,
             text_featurizer=text_featurizer,
             **vars(config.learning_config.eval_dataset_config),
-            indefinite=True
+            indefinite=indefinite
         )
     else:
         train_dataset = asr_dataset.ASRSliceDataset(
             speech_featurizer=speech_featurizer,
             text_featurizer=text_featurizer,
             **vars(config.learning_config.train_dataset_config),
-            indefinite=True
+            indefinite=indefinite
         )
         eval_dataset = asr_dataset.ASRSliceDataset(
             speech_featurizer=speech_featurizer,
             text_featurizer=text_featurizer,
             **vars(config.learning_config.eval_dataset_config),
-            indefinite=True
+            indefinite=indefinite
         )
     train_dataset.load_metadata(metadata)
     eval_dataset.load_metadata(metadata)
