@@ -72,7 +72,7 @@ import tensorflow as tf
 from tensorflow_asr.configs.config import Config
 from tensorflow_asr.helpers import featurizer_helpers, dataset_helpers
 
-from .transformer_asr import Transformer
+from tensorflow_asr.models.transformer import Transformer
 
 DEFAULT_YAML = os.path.join(os.path.abspath(os.path.dirname(__file__)), "config.yml")
 
